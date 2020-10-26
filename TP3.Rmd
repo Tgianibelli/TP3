@@ -1,0 +1,20 @@
+---
+title: "TP3"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Comenzamos prendiendo la librería tidyverse 
+
+```{r}
+library(tidyverse)
+```
+
+# Descargamos y guaradamos como objeto la base sobre películas de IMDB de Datos de Miércoles
+
+```{r}
+imdb <- read_csv("https://raw.githubusercontent.com/cienciadedatos/datos-de-miercoles/master/datos/2020/2020-02-19/ranking_imdb.csv")
+```
+
+#
