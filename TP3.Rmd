@@ -11,10 +11,76 @@ output:
 library(tidyverse)
 ```
 
-# Descargamos y guaradamos como objeto la base sobre películas de IMDB de Datos de Miércoles
+# Descargamos y guaradamos como objeto la base sobre películas de IMDB de Datos de Miércoles.
 
 ```{r}
 imdb <- read_csv("https://raw.githubusercontent.com/cienciadedatos/datos-de-miercoles/master/datos/2020/2020-02-19/ranking_imdb.csv")
 ```
 
-#
+# Modificamos la base para quedarnos sólamente con las películas con más de 100.000 votos y creamos una variable que agrupe por década.
+
+```{r}
+imdbm <- imdb %>% 
+  filter(votos > 100000) %>% 
+  mutate(decada = floor(anio/10)*10)
+```
+
+# Generamos un gráfico con línea de mejor ajuste que nos muestra la relación entre duración de una película y puntuación promedio.
+
+```{r}
+ggplot(imdbm, aes(duracion, puntaje)) +
+  geom_smooth(colour = 'yellow') +
+  scale_x_continuous(n.breaks = 8) +
+  labs(x = 'Cantidad de minutos', 
+       y = 'Puntuación promedio', 
+       title = 'La relación entre duración y puntuación promedio obtenida en IMDB',
+       subtitle = 'Tomando únicamente películas con más de 100.000 calificaciones',
+       caption = 'Base obtenida de Datos de Miércoles') + 
+  theme_minimal() +
+  theme(text = element_text('Avenir Next Condensed'),
+        plot.subtitle = element_text(face = 'italic'),
+        plot.title = element_text(face = 'bold'))
+```
+
+# Comprobamos si esa relación es consistente independientemente de la década que observemos. 
+
+```{r}
+ggplot(imdbm, aes(duracion, puntaje)) +
+  geom_smooth(colour = 'yellow') +
+  scale_x_continuous(n.breaks = 4) +
+  facet_wrap(~ decada) + 
+  labs(x = 'Cantidad de minutos', 
+       y = 'Puntuación promedio', 
+       title = 'La relación entre duración y puntuación promedio obtenida en IMDB',
+       subtitle = 'Tomando únicamente películas con más de 100.000 calificaciones',
+       caption = 'Base obtenida de Datos de Miércoles') +
+  theme_minimal() +
+  theme(text = element_text('Avenir Next Condensed'),
+        plot.subtitle = element_text(face = 'italic'),
+        plot.title = element_text(face = 'bold'))
+  
+  
+```
+
+# Como solámente tenemos una observación en nuestra base que corresponde a la década del `20 (Metrópolis de Fritz Lang) el cuadro correspondiente a dicha década queda vacío. Con el objetivo de que quede más prolija la presentación vamos a modificar nuevamente la base de datos para eliminar las observaciones correspondientes a la década del `20 y volvemos a correr el mismo gráfico.
+
+```{r}
+imdbm <- imdbm %>% 
+  filter(decada != '1920')
+```
+```{r}
+ggplot(imdbm, aes(duracion, puntaje)) +
+  geom_smooth(colour = 'yellow') +
+  scale_x_continuous(n.breaks = 4) +
+  facet_wrap(~ decada) + 
+  labs(x = 'Cantidad de minutos', 
+       y = 'Puntuación promedio', 
+       title = 'La relación entre duración y puntuación promedio obtenida en IMDB',
+       subtitle = 'Tomando únicamente películas con más de 100.000 calificaciones',
+       caption = 'Base obtenida de Datos de Miércoles') +
+  theme_minimal() +
+  theme(text = element_text('Avenir Next Condensed'),
+        plot.subtitle = element_text(face = 'italic'),
+        plot.title = element_text(face = 'bold'))
+```
+
